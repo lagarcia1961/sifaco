@@ -1,0 +1,301 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+	<div class="row">
+		<div class="col-12">
+			<div class="page-title-box d-sm-flex align-items-center justify-content-between">
+				<div class="page-title-left">
+					<ol class="breadcrumb m-0">
+						<li class="breadcrumb-item">
+							<a href="javascript: void(0);">{{title}}</a>
+						</li>
+					</ol>
+				</div>
+
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-xs-12">
+			<h1>{{title}}</h1>
+		</div>
+	</div>
+	<!-- end page title -->
+
+
+	<div class="row">
+		<div class="col-4">
+			<div class="row">
+				<div
+					class="col-12">
+					<!-- card -->
+					<div
+						class="card card-h-100">
+						<!-- card body -->
+						<div class="card-body">
+							<div class="row align-items-center">
+								<div class="col-12 text-center">
+									<h3>Normas cargadas</h3>
+
+								</div>
+								<div class="col-12 text-center">
+									<h4 class="mb-3">
+										<h3 class="counter-value" data-target="{{normas_cargadas}}">0</h3>
+									</h4>
+								</div>
+							</div>
+						</div>
+						<!-- end card body -->
+					</div>
+					<!-- end card -->
+				</div>
+				<!-- end col -->
+
+				<div
+					class="col-12">
+					<!-- card -->
+					<div
+						class="card card-h-100">
+						<!-- card body -->
+						<div class="card-body">
+							<div class="row align-items-center">
+								<div class="col-12 text-center">
+									<h3>Temas</h3>
+
+								</div>
+								<div class="col-12 text-center">
+									<h4 class="mb-3">
+										<h3 class="counter-value" data-target="{{temas_cargados}}">0</h3>
+									</h4>
+								</div>
+							</div>
+						</div>
+						<!-- end card body -->
+					</div>
+					<!-- end card -->
+				</div>
+				<!-- end col-->
+
+				<div
+					class="col-12">
+					<!-- card -->
+					<div
+						class="card card-h-100">
+						<!-- card body -->
+						<div class="card-body">
+							<div class="row align-items-center">
+								<div class="col-12 text-center">
+									<h3>Dependencias</h3>
+
+								</div>
+								<div class="col-12 text-center">
+									<h4 class="mb-3">
+										<h3 class="counter-value" data-target="{{dependencias_cargadas}}">0</h3>
+									</h4>
+								</div>
+							</div>
+						</div>
+						<!-- end card body -->
+					</div>
+					<!-- end card -->
+				</div>
+				<!-- end col-->
+
+				<div
+					class="col-12">
+					<!-- card -->
+					<div
+						class="card card-h-100">
+						<!-- card body -->
+						<div class="card-body">
+							<div class="row align-items-center">
+								<div class="col-12 text-center">
+									<h3>Tipos de normas</h3>
+
+								</div>
+								<div class="col-12 text-center">
+									<h4 class="mb-3">
+										<h3 class="counter-value" data-target="{{tipo_normas_cargadas}}">0</h3>
+									</h4>
+								</div>
+							</div>
+						</div>
+						<!-- end card body -->
+					</div>
+					<!-- end card -->
+				</div>
+				<!-- end col-->
+			</div>
+		</div>
+		<div class="col-8">
+			<div class="row">
+				<div class="col-12">
+					<div class="card">
+						<div class="card-header text-center">
+							<h4 class="card-title mb-0">Cantidad de normas por tipo de norma</h4>
+						</div>
+						<div class="card-body">
+							<div id="normasPorTipoPie" style="width: 100%; height: 400px;"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- end row-->
+	<div class="row">
+		<div class="col-12">
+			<div class="card">
+				<div class="card-header text-center">
+					<h4 class="card-title mb-0">Cantidad de normas por tema</h4>
+				</div>
+				<div class="card-body">
+					<div id="normasPorTemaBar" style="width: 100%; height: 400px;"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+	<hr>
+	<div class="row">
+		<div class="col-xs-12 my-4">
+			<h2>Normativas destacadas</h2>
+		</div>
+
+		{% for seccion in secciones %}
+			<div class="col-xs-12 col-sm-6 col-lg-3">
+				<div class="card border border-primary" style="min-height: 200px;">
+					<div class="card-header bg-transparent border-primary" style="min-height: 85px;">
+						<h5 class="my-0 text-primary">
+							<i class="fas fa-file-signature"></i>
+							{{seccion.tema.nombre}}
+						</h5>
+					</div>
+					<div class="card-body">
+						{% for seccion_norma in seccion.getVisibleSeccionNormas() %}
+							<a target="_blank" href="{{ path('app_show_norma', {'slug':seccion_norma.norma.slug}) }}">
+								<h5 class="card-title">
+									<i class="fas fa-angle-right"></i>
+									{{ seccion_norma.titulo }}
+								</h5>
+							</a>
+						{% endfor %}
+					</div>
+				</div>
+			</div>
+		{% endfor %}
+
+	</div>
+	<script>
+
+		// grafico de pie
+		document.addEventListener('DOMContentLoaded', function () {
+			const chartDom = document.getElementById('normasPorTipoPie');
+			const myChart = echarts.init(chartDom);
+
+			const data = [
+				{% for item in normas_por_tipo %}
+					{value: {{ item.total }}, name: "{{ item.tipo }}"}{% if not loop.last %},{% endif %}
+				{% endfor %}
+			];
+
+			const option = {
+				tooltip: {
+					trigger: 'item',
+					formatter: '{a} <br/>{b}: {c} ({d}%)'
+				},
+				legend: {
+					orient: 'vertical',
+					left: 'right',
+					formatter: function (name) {
+						// Buscar el valor correspondiente al nombre en los datos
+						const item = data.find(d => d.name === name);
+						return `${name} (${item.value})`;
+					},
+					data: [
+						{% for item in normas_por_tipo %}
+							"{{ item.tipo }}"{% if not loop.last %},{% endif %}
+						{% endfor %}
+					]
+				},
+				series: [
+					{
+						name: 'Normas',
+						type: 'pie',
+						radius: '50%',
+						data: data,
+						emphasis: {
+							itemStyle: {
+								shadowBlur: 10,
+								shadowOffsetX: 0,
+								shadowColor: 'rgba(0, 0, 0, 0.5)'
+							}
+						}
+					}
+				]
+			};
+
+			myChart.setOption(option);
+		});
+
+
+		// grafico de barras
+		document.addEventListener('DOMContentLoaded', function () {
+				// Configuración del gráfico de barras con ECharts
+				const chartDom = document.getElementById('normasPorTemaBar');
+				const myBarChart = echarts.init(chartDom);
+
+				const option = {
+				tooltip: {
+					trigger: 'axis',
+					axisPointer: {
+						type: 'shadow',
+					},
+				},
+				grid: {
+					left: '3%',
+					right: '3%',
+					bottom: '20%',  // Aumenta el espacio inferior para las etiquetas
+					containLabel: true
+				},
+				xAxis: {
+					type: 'category',
+					data: {{ normas_por_tema|map(item => item.tema)|json_encode|raw }},
+					axisLabel: {
+						interval: 0,
+						rotate: 45,  // Incrementa el ángulo de rotación para evitar que se encimen
+						margin: 10,   // Margen adicional para mejorar la visibilidad
+						formatter: function(value) {
+							if (value.length > 15) {
+								return value.substring(0, 15) + '...';  // Acorta etiquetas muy largas
+							}
+							return value;
+						}
+					},
+				},
+				yAxis: {
+					type: 'value',
+					name: 'Cantidad',
+					minInterval: 1,
+				},
+				series: [
+					{
+						name: 'Cantidad de Normas',
+						type: 'bar',
+						data: {{ normas_por_tema|map(item => item.total)|json_encode|raw }},
+						itemStyle: {
+							color: '#fd9830',
+						},
+					},
+				],
+			};
+
+			myBarChart.setOption(option);
+
+		});
+
+	</script>
+{% endblock %}
