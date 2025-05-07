@@ -1,0 +1,10 @@
+.auth-bg {
+    background-image: url("../images/auth-bg-00feff646d50834c367e50bb1723126d.jpg");
+    background-position: left;
+    background-size: cover;
+    background-repeat: no-repeat;
+  }
+
+.navbar-header .text-header{
+    color: #fff;
+}

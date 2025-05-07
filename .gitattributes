@@ -1,0 +1,24 @@
+# Normalizar finales de línea
+* text=auto
+
+# Archivos PHP como texto
+*.php text
+
+# Twig, YAML, Markdown y otros como texto
+*.twig text
+*.yml text
+*.yaml text
+*.md text
+*.json text
+
+# Ignorar estos archivos al exportar (ej. GitHub -> ZIP)
+/.gitignore export-ignore
+/.gitattributes export-ignore
+/.editorconfig export-ignore
+/.php-cs-fixer.dist.php export-ignore
+/phpunit.xml.dist export-ignore
+/.env.local export-ignore
+.env.*.local export-ignore
+
+# Composer
+/composer.lock merge=union
