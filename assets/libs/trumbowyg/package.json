@@ -6,8 +6,8 @@
   "main": "dist/trumbowyg.js",
   "license": "MIT",
   "scripts": {
-    "dev": "gulp",
-    "build": "gulp build",
+    "dev": "webpack --mode development",
+    "build": "webpack --mode production",
     "clean": "gulp clean",
     "test": "gulp test"
   },
